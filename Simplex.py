@@ -26,7 +26,10 @@ def Phase_1(A, b, z):
     # Redundent Constraints
     l = [np.where(xb==i)[0] for i in xb1]
     for i in l:
-        np.delete(tb, i, axis = 0)    
+        tb = np.delete(tb, i+2, axis = 0)
+        xb = np.delete(xb, i, axis=0)
+        sol = np.delete(sol, i, axis = 0)
+    m = xb.shape[0]    
     # Convert the  2 phase z row to regular z row
     tb[0, :] = np.array([i for i in range(n+2)])
     nbv_idx = np.array(list(range(1, n+1)))
@@ -140,20 +143,30 @@ def Simplex(tableau, m, n, opt_flag = True):
 # xb = [4, 5]
  
 # Edge case with 0/-ve in ratio test
-P = [[-1, -3, 0, 0, 0],
-    [1, -2, 1, 0, 0],
-    [-2, 1, 0, 1, 0],
-    [5, 3, 0, 0, 1]]
+# P = [[-1, -3, 0, 0, 0],
+#     [1, -2, 1, 0, 0],
+#     [-2, 1, 0, 1, 0],
+#     [5, 3, 0, 0, 1]]
  
-b = [0, 4, 15]
+# b = [0, 4, 15]
  
-xb = [3, 4, 5]
+# xb = [3, 4, 5]
+
+# Redundent constraint problem
+
+P = [[1, 1, 1, 0],
+    [1, 2, 3, 0],
+    [-1, 2, 6, 0],
+    [0, 4, 9, 0],
+    [0, 0, 3, 1]]
+ 
+b = [3, 2, 5, 1]
  
  
 P = np.array(P)
 b = np.array(b)
 z = P[0, :]
 A = P[1:, :]
-xb = np.array(xb)
+# xb = np.array(xb)
  
 print(A, "\n", b.T)
