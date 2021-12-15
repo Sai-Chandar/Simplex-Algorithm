@@ -46,13 +46,14 @@ def Phase_1(A, b, z):
  
  
 def Optimality_check(z, xb):
+    #Bland's rule: picks the smallest index for a tie
     idx = np.argmax(z)
     if z[idx] == 0:
         # Have to add the multiple solutions case, use xb
         return True, idx+1
     return False, idx+1
     
-def ratio_test(b, pivot_col):
+def ratio_test(b, pivot_col, xb):
     ix = 0
     flag2 = False
     if pivot_col[np.argmax(pivot_col)] <= 0:
@@ -64,6 +65,10 @@ def ratio_test(b, pivot_col):
     t[np.isnan(t)] = np.Inf
     # t[t<0] = np.Inf
     ix = np.argmin(t)
+    #Bland's rule: picks the smallest index for a tie
+    bld_rule = sum(t==t[ix])
+    if bld_rule > 1:
+        ix = np.argmin(xb[bld_rule])
     return flag2, ix+2
  
  
@@ -93,7 +98,7 @@ def Simplex(tableau, m, n, opt_flag = True):
                 print("Optimal Solution.")
             break
         pivot_col = np.copy(tableau[2:, idx])
-        flag2, ix = ratio_test(b, pivot_col)
+        flag2, ix = ratio_test(b, pivot_col, xb)
         if flag2 == True:
             print("Unbounded.")
             break
@@ -157,13 +162,21 @@ def Simplex(tableau, m, n, opt_flag = True):
 
 # Redundent constraint problem
 
-P = [[19, 17, 23, 21, 25],
-    [60, 25, 45, 20, 50],
-    [10, 15, 45, 50, 40],
-    [30, 60, 10, 30, 10],
-    [1, 1, 1, 1, 1]]
+# P = [[19, 17, 23, 21, 25],
+#     [60, 25, 45, 20, 50],
+#     [10, 15, 45, 50, 40],
+#     [30, 60, 10, 30, 10],
+#     [1, 1, 1, 1, 1]]
  
-b = [40, 35, 25, 1]
+# b = [40, 35, 25, 1]
+
+# degenerate LP
+
+P = [[-1, -1, -1, 0, 0],
+     [1, 1, 0, 1, 0],
+     [0, -1, 1, 0, 1]]
+ 
+b = [8, 0]
  
  
 P = np.array(P)
