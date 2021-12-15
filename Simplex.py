@@ -63,12 +63,18 @@ def ratio_test(b, pivot_col, xb):
     np.seterr(divide='ignore')
     t = b/pivot_col
     t[np.isnan(t)] = np.Inf
+    print("printing t", t)
     # t[t<0] = np.Inf
     ix = np.argmin(t)
+    print("ix before", ix)
     #Bland's rule: picks the smallest index for a tie
-    bld_rule = sum(t==t[ix])
-    if bld_rule > 1:
-        ix = np.argmin(xb[bld_rule])
+    bld_rule = (t==t[ix])
+    if sum(bld_rule) > 1:
+        ties = xb[bld_rule]
+        min_idx = np.argmin(ties)
+        ix = np.where(xb==ties[min_idx])[0][0]
+    print("ix after", ix)
+    print("xb", xb)
     return flag2, ix+2
  
  
@@ -172,12 +178,30 @@ def Simplex(tableau, m, n, opt_flag = True):
 
 # degenerate LP
 
-P = [[-1, -1, -1, 0, 0],
-     [1, 1, 0, 1, 0],
-     [0, -1, 1, 0, 1]]
+# P = [[-1, -1, -1, 0, 0],
+#      [1, 1, 0, 1, 0],
+#      [0, -1, 1, 0, 1]]
  
-b = [8, 0]
+# b = [8, 0]
  
+# Model 5
+#['x11', 'x21', 'x31', 'x41', 'x12', 'x22', 'x32', 'x42', 's1', 's2', 's3', 's4', 's5', 's6', 's7', 's8']
+#[38.95, 53.95, 60.95, 29.95, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#[0, 0, 0, 0, 38.95, 53.95, 60.95, 29.95, 0, 0, 0, 0, 0, 0, 0, 0],
+
+P = [[-0.82, -1.23, -1.19, -1.05, -0.32, -0.73, -0.69, -0.55, 0, 0, 0, 0, 0, 0, 0, 0],
+     [43.43, 6.57, 11.42, 25.97, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0],
+     [11.09, 35.8, 23.45, 37.7, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+     [3.58, 0.88, 1.78, 2.68, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0],
+     [0, 0, 0, 0, 11.09, 35.8, 24.7, 39.7, 0, 0, 0, -1, 0, 0, 0, 0],
+     [1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+     [0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+     [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+     [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1]]
+ 
+b = [0, 0, 0, 0, 1500, 500, 1000, 2000]
+
+
  
 P = np.array(P)
 b = np.array(b)
