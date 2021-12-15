@@ -18,7 +18,7 @@ def Phase_1(A, b, z):
     tb, z_star, sol, xb = Simplex(tb, m_2, n_2, opt_flag= False)
     if z_star != 0:
         print("Infeasible")
-        return 0
+        return (0, 0, 0, 0) #fix the return error
     # Removing the artificial variables 
     artf_idx = list(range(n+m+2))
     del artf_idx[-(m+1):-1]
@@ -41,6 +41,7 @@ def Phase_1(A, b, z):
     tb[1, xb.astype(int)] = 0
     tb[1, -1] = cb@sol
     f_tb, f_z_star, f_sol, f_xb = Simplex(tb, m, n)
+    return f_tb, f_z_star, f_sol, f_xb
  
  
  
@@ -81,6 +82,8 @@ def build_tableau(A, b, z, xb, z_o = 0):
 def Simplex(tableau, m, n, opt_flag = True):
     i = 0
     while 1:
+        eps = 1e-6
+        tableau[np.abs(tableau) < eps] = 0
         z = tableau[1, 1:n+1]
         xb = tableau[2:, 0]
         b = tableau[2:(m+2), -1]
@@ -108,7 +111,7 @@ def Simplex(tableau, m, n, opt_flag = True):
  
     z_star =  tableau[1, -1]
     sol = b
-    xb = tableau[2:, 0] 
+    xb = tableau[2:, 0]
  
     return tableau, z_star, sol, xb
  
@@ -154,13 +157,13 @@ def Simplex(tableau, m, n, opt_flag = True):
 
 # Redundent constraint problem
 
-P = [[1, 1, 1, 0],
-    [1, 2, 3, 0],
-    [-1, 2, 6, 0],
-    [0, 4, 9, 0],
-    [0, 0, 3, 1]]
+P = [[19, 17, 23, 21, 25],
+    [60, 25, 45, 20, 50],
+    [10, 15, 45, 50, 40],
+    [30, 60, 10, 30, 10],
+    [1, 1, 1, 1, 1]]
  
-b = [3, 2, 5, 1]
+b = [40, 35, 25, 1]
  
  
 P = np.array(P)
